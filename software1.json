@@ -1,0 +1,9 @@
+[
+    {
+        "Name": "Adobe Reader",
+        "Uri": "https://127bd7ed15cb417db5d50ac.blob.core.windows.net/windows/AcroRdrDC1801120035_en_US.exe",
+        "Hash": "8F8349DE35F1BEC7B35F8172D3F37705181417A4BB986AC27B17B07B1B1D1249",
+        "HashType": "SHA256",
+        "Platform": "Windows"
+    }
+]

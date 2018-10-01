@@ -1,0 +1,115 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "Engagement": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 10
+        },
+        "vNetName": {
+            "type": "string"
+        },
+        "virtualNetworkAddressRange": {
+            "type": "string",
+            "metadata": {
+              "Description": "The address range of the new VNET in CIDR format"
+            },
+            "defaultValue": "10.0.0.0/16"
+        },
+        "SubNetworkName": {
+            "type": "string"
+        },
+        "SubNetworkAddressPrefix": {
+            "type": "string"
+        },
+        "artifactsURI": {
+            "type": "string"
+        },
+        "artifactSasToken": {
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "string"
+        },
+        "adminPassword": {
+            "type": "securestring"
+        },
+        "dnsLabelPrefix": {
+            "type": "string"
+        },
+        "windowsOSVersion": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "locationName": "[resourceGroup().location]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('engagement'),'_Network')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "templateLink": {
+                    "uri": "[concat(parameters('artifactsURI'),'vnet.json',parameters('artifactSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualNetworkName": {
+                        "value": "[parameters('vNetName')]"
+                    },
+                    "virtualNetworkAddressRange": {
+                        "value": "[parameters('virtualNetworkAddressRange')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('SubNetworkName')]"
+                    },
+                    "subnetRange": {
+                        "value": "[parameters('SubNetworkAddressPrefix')]"
+                    },
+                    "location": {
+                        "value": "[variables('locationName')]"
+                    }
+                },
+                "mode": "Incremental"
+            }
+        },
+        {
+            "name": "[concat(parameters('engagement'),'_WindowsVM')]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "properties": {
+                "templateLink": {
+                    "uri": "[concat(parameters('artifactsURI'),'WindowsVM.json',parameters('artifactSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "dnsLabelPrefix": {
+                        "value": "[parameters('dnsLabelPrefix')]"
+                    },
+                    "VNetName": {
+                        "value": "[parameters('vNetName')]"
+                    },
+                    "SubnetName": {
+                        "value": "[parameters('SubNetworkName')]"
+                    },
+                    "windowsOSVersion": {
+                        "value": "[parameters('windowsOSVersion')]"
+                    },
+                    "location": {
+                        "value": "[variables('locationName')]"
+                    }
+                },
+                "mode": "Incremental"
+            }
+        }
+    ],
+    "outputs": {}
+}
